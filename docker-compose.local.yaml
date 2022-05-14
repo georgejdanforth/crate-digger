@@ -1,0 +1,10 @@
+services:
+  musicbrainz-db:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_DB: musicbrainz
+      POSTGRES_USER: musicbrainz
+      POSTGRES_PASSWORD: musicbrainz
+    ports:
+      - "15432:5432"
