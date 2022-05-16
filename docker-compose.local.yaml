@@ -1,6 +1,6 @@
 services:
   musicbrainz-db:
-    image: postgres:14
+    image: postgres:12
     restart: always
     environment:
       POSTGRES_DB: musicbrainz
