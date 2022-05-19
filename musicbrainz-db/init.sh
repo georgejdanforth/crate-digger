@@ -8,8 +8,10 @@ PG_DSN=${MUSICBRAINZ_DSN:-'postgresql://musicbrainz:musicbrainz@localhost:15432/
 echo "Creating schemata..."
 psql $PG_DSN --csv -c 'CREATE SCHEMA IF NOT EXISTS musicbrainz'
 
-echo "Installing extensions..."
+echo "Installing base extensions..."
 psql $PG_DSN --csv -f $SCRIPT_DIR/mbdata/mbdata/sql/Extensions.sql > /dev/null
+echo "Installing custom extensions..."
+psql $PG_DSN --csv -f $SCRIPT_DIR/sql/create_extensions.sql > /dev/null
 echo "Creating collations..."
 psql $PG_DSN --csv -f $SCRIPT_DIR/mbdata/mbdata/sql/CreateCollations.sql > /dev/null
 echo "Creating tables..."
@@ -33,6 +35,8 @@ echo "Creating indexes..."
 psql $PG_DSN --csv -f $SCRIPT_DIR/mbdata/mbdata/sql/CreateIndexes.sql > /dev/null
 echo "Creating slave indexes..."
 psql $PG_DSN --csv -f $SCRIPT_DIR/mbdata/mbdata/sql/CreateSlaveIndexes.sql > /dev/null
+echo "Creating custom indexes..."
+psql $PG_DSN --csv -f $SCRIPT_DIR/sql/create_indexes.sql > /dev/null
 echo "Creating foreign key constraints..."
 psql $PG_DSN --csv -f $SCRIPT_DIR/mbdata/mbdata/sql/CreateFKConstraints.sql > /dev/null
 echo "Creating foreign table constraints..."
