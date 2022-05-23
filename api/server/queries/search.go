@@ -1,7 +1,6 @@
 package queries
 
-const SearchLabel = `
-SELECT
+const SearchLabel = `SELECT
 	label.id               AS id,
 	label.gid              AS gid,
 	label.name             AS name,
@@ -30,4 +29,37 @@ LEFT JOIN label_alias AS alias ON (alias.name = name_scores.name OR alias.sort_n
 INNER JOIN label ON (alias.label = label.id OR name_scores.name = label.name)
 GROUP BY label.id, label.gid, label.name
 ORDER BY score DESC, label.name
+LIMIT 50;`
+
+
+const SearchArtist = `SELECT
+	artist.id               AS id,
+	artist.gid              AS gid,
+	artist.name             AS name,
+	artist.sort_name        AS sort_name,
+	artist.begin_date_year  AS begin_date_year,
+	artist.begin_date_month AS begin_date_month,
+	artist.begin_date_day   AS begin_date_day,
+	artist.end_date_year    AS end_date_year,
+	artist.end_date_month   AS end_date_month,
+	artist.end_date_day     AS end_date_day,
+	artist.type             AS type,
+	artist.comment          AS comment,
+	MAX(name_scores.score)  AS score
+FROM (
+	SELECT name, similarity(name, $1) AS score
+	FROM (
+		SELECT name              FROM artist       UNION ALL
+		SELECT sort_name AS name FROM artist       UNION ALL
+		SELECT name              FROM artist_alias UNION ALL
+		SELECT sort_name AS name FROM artist_alias
+	) names
+	WHERE similarity(name, $1) > $2
+	ORDER BY score DESC
+	LIMIT 100
+) name_scores
+LEFT JOIN artist_alias AS alias ON (alias.name = name_scores.name OR alias.sort_name = name_scores.name)
+INNER JOIN artist ON (alias.artist = artist.id OR name_scores.name = artist.name)
+GROUP BY artist.id, artist.gid, artist.name
+ORDER BY score DESC, artist.name
 LIMIT 50;`
