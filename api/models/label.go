@@ -15,7 +15,3 @@ type LabelSearchResult struct {
 	Comment        string    `db:"comment" json:"comment"`
 	Score          float32   `db:"score" json:"score"`
 }
-
-type LabelSearchResults struct {
-	Results []LabelSearchResult `json:"results"`
-}
