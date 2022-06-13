@@ -30,3 +30,16 @@ func (ni *NullInt32) MarshalJSON() ([]byte, error) {
 	}
 	return json.Marshal(ni.Int32)
 }
+
+type NullString sql.NullString
+
+func (ns *NullString) Scan(value interface{}) error {
+	return (*sql.NullString)(ns).Scan(value)
+}
+
+func (ns *NullString) MarshalJSON() ([]byte, error) {
+	if !ns.Valid {
+		return []byte("null"), nil
+	}
+	return json.Marshal(ns.String)
+}

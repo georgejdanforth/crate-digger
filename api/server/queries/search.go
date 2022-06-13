@@ -45,6 +45,7 @@ const SearchLabel = `SELECT
 	label.label_code       AS label_code,
 	label.type             AS type,
 	label.comment          AS comment,
+	area.name              AS area_name,
 	MAX(name_scores.score) AS score
 FROM (
 	SELECT name, similarity(name, $1) AS score
@@ -59,6 +60,7 @@ FROM (
 ) name_scores
 LEFT JOIN label_alias AS alias ON (alias.name = name_scores.name OR alias.sort_name = name_scores.name)
 INNER JOIN label ON (alias.label = label.id OR name_scores.name = label.name)
-GROUP BY label.id, label.gid, label.name
+LEFT JOIN area ON label.area = area.id
+GROUP BY label.id, label.gid, label.name, area.name
 ORDER BY score DESC, label.name
 LIMIT 50;`
