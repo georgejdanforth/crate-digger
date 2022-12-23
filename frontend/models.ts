@@ -20,6 +20,7 @@ export interface ArtistSearchResult {
   endDateDay: number | null;
   type: number | null;
   comment: string;
+  areaName: string | null;
   score: number;
 }
 
