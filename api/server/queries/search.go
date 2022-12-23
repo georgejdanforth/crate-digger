@@ -13,6 +13,7 @@ const SearchArtist = `SELECT
 	artist.end_date_day     AS end_date_day,
 	artist.type             AS type,
 	artist.comment          AS comment,
+	area.name               AS area_name,
 	MAX(name_scores.score)  AS score
 FROM (
 	SELECT name, similarity(name, $1) AS score
@@ -27,8 +28,9 @@ FROM (
 	LIMIT 50
 ) name_scores
 LEFT JOIN artist_alias AS alias ON (alias.name = name_scores.name)
+LEFT JOIN area ON artist.area = area.id
 INNER JOIN artist ON (alias.artist = artist.id OR name_scores.name = artist.name)
-GROUP BY artist.id, artist.gid, artist.name
+GROUP BY artist.id, artist.gid, artist.name, area.name
 ORDER BY score DESC, artist.name
 LIMIT 25;`
 
